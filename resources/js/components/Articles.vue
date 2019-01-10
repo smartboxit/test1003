@@ -3,11 +3,19 @@
         <h2>Article</h2>
           <nav aria-label="Page navigation example">
                 <ul class="pagination">
-                    <li v-bind:class="[ {disabled:!pagination.prev_page_url} ]" class="page-items">
+                    <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="page-items">
                             <a class="page-link" href="#" @click="fetchArticles(pagination.prev_page_url)" >Previous</a>
                     </li>
-                    
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+
+                    <li class="page-item disabled">
+                        <a class="page-link text-dark" href="#">Page: {{pagination.current_page}} of {{pagination.last_page}}</a>
+                    </li>
+
+                    <li v-bind:class="[{disabled: !pagination.next_page_url}] "class="page-item">
+                          <a class="page-link" href="#" @click="fetchArticles(pagination.next_page_url)">Next</a>
+                    </li>
+
+
                 </ul>
           </nav>
 
@@ -16,6 +24,8 @@
             <div class="card card-body mb-2" v-for="article in articles"  v-bind:key="article.id">
                  <h3>{{ article.title }} </h3>
                  <p> {{ article.body  }} </p>
+                    <hr> <button @click="deleteArticle" class="btn btn-danger"> Delete </button>
+
              </div>
     </div>
 </template>
@@ -33,7 +43,7 @@
                 article_id:'',
                 pagination:{},
                 edit:false
-                    }   
+                    }
                 },
         created() {
                     this.fetchArticles();
@@ -42,7 +52,7 @@
                     fetchArticles(page_url) {
                         let vm= this;
                         page_url=page_url || 'api/articles'
-                        fetch('api/articles')
+                        fetch(page_url)
                             .then(res=>res.json())
                             .then(res=>{
                                 this.articles = res.data;
@@ -55,16 +65,25 @@
                                         current_page: meta.current_page,
                                         last_page: meta.last_page,
                                         next_page_url: links.next,
-                                        prev_page_url: links.prev    
-                        }
+                                        prev_page_url: links.prev
+                        };
                         this.pagination=pagination;
                         console.log(this.pagination.prev_page_url)
+                    },
+
+                    deleteArticle(id) {
+                      if(confirm('Are you sure ?')) {
+                        fetch('api/article/${id}', {method: 'delete'} )
+                        .then(res=> res.json())
+                        .then(data => {
+                          alert('Article removed');
+                          this.fetchArticles();
+                        })
+                        .catch(err => console.log(err));
+                      }
                     }
                 },
-        
-        mounted() {
-            console.log(this.pagination.current_page)
-                   }
-        }
 
+                mounted() {console.log(this.pagination.current_page) }
+        }
 </script>

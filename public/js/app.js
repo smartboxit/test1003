@@ -1785,6 +1785,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1808,7 +1818,7 @@ __webpack_require__.r(__webpack_exports__);
 
       var vm = this;
       page_url = page_url || 'api/articles';
-      fetch('api/articles').then(function (res) {
+      fetch(page_url).then(function (res) {
         return res.json();
       }).then(function (res) {
         _this.articles = res.data;
@@ -1826,6 +1836,23 @@ __webpack_require__.r(__webpack_exports__);
       };
       this.pagination = pagination;
       console.log(this.pagination.prev_page_url);
+    },
+    deleteArticle: function deleteArticle(id) {
+      var _this2 = this;
+
+      if (confirm('Are you sure ?')) {
+        fetch('api/article/${id}', {
+          method: 'delete'
+        }).then(function (res) {
+          return res.json();
+        }).then(function (data) {
+          alert('Article removed');
+
+          _this2.fetchArticles();
+        }).catch(function (err) {
+          return console.log(err);
+        });
+      }
     }
   },
   mounted: function mounted() {
@@ -37077,7 +37104,43 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _vm._m(0)
+          _c("li", { staticClass: "page-item disabled" }, [
+            _c(
+              "a",
+              { staticClass: "page-link text-dark", attrs: { href: "#" } },
+              [
+                _vm._v(
+                  "Page: " +
+                    _vm._s(_vm.pagination.current_page) +
+                    " of " +
+                    _vm._s(_vm.pagination.last_page)
+                )
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "li",
+            {
+              staticClass: "page-item",
+              class: [{ disabled: !_vm.pagination.next_page_url }]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      _vm.fetchArticles(_vm.pagination.next_page_url)
+                    }
+                  }
+                },
+                [_vm._v("Next")]
+              )
+            ]
+          )
         ])
       ]),
       _vm._v(" "),
@@ -37088,7 +37151,18 @@ var render = function() {
           [
             _c("h3", [_vm._v(_vm._s(article.title) + " ")]),
             _vm._v(" "),
-            _c("p", [_vm._v(" " + _vm._s(article.body) + " ")])
+            _c("p", [_vm._v(" " + _vm._s(article.body) + " ")]),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger",
+                on: { click: _vm.deleteArticle }
+              },
+              [_vm._v(" Delete ")]
+            )
           ]
         )
       })
@@ -37096,18 +37170,7 @@ var render = function() {
     2
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", { staticClass: "page-item" }, [
-      _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-        _vm._v("Next")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -48699,8 +48762,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! F:\project\Git\test1003\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! F:\project\Git\test1003\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! E:\dev\git\test1003\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\dev\git\test1003\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
