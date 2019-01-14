@@ -3,7 +3,7 @@
         <h2>Article</h2>
           <form @submit.prevent="addArticle" class="mb-3">
               <div class="form-group">
-                <input type="text" class="form-control" placeholder="Title" v-model="article.title"> </input>
+                <input type="text" class="form-control" placeholder="Title" v-model="article.title">
               </div>
 
               <div class="form-group">
@@ -37,6 +37,8 @@
             <div class="card card-body mb-2" v-for="article in articles"  v-bind:key="article.id">
                  <h3>{{ article.title }} </h3>
                  <p> {{ article.body  }} </p>
+
+                    <hr> <button @click="editArticle(article)"  class="btn btn-warning"> Edit </button>
                     <hr> <button @click="deleteArticle(article.id)" class="btn btn-danger"> Delete </button>
 
                 </div>
@@ -72,7 +74,7 @@
         methods: {
                       fetchArticles(page_url) {
                           let vm= this;
-                          page_url=page_url || 'api/articles'
+                          page_url=page_url || '/api/articles';
                           fetch(page_url)
                               .then(res=>res.json())
                               .then(res=>{
@@ -87,9 +89,7 @@
                                         last_page: meta.last_page,
                                         next_page_url: links.next,
                                         prev_page_url: links.prev
-                        };
-                        this.pagination=pagination;
-                        console.log(this.pagination.prev_page_url)
+                        }
                     },
 
                     deleteArticle(id) {
@@ -112,20 +112,39 @@
                         body: JSON.stringify(this.article),
                         headers: {'content-type':'application/json'}
                       })
-                        .then(data => res.json())
+                        .then(res => res.json())
                         .then(data => {
                           this.article.title='';
                           this.article.body='';
                           alert('Article added');
                           this.fetchArticles();
                         })
-                    .catch(err => console.log(err));
+                        .catch(err => console.log(err));
                   } else {
                     //Update
-                  }
-
+                    fetch('api/article/${this.article.id}', {
+                      method: 'put',
+                      body: JSON.stringify(this.article),
+                      headers: {'content-type':'application/json'}
+                    })
+                      .then(res => res.json())
+                      .then(data => {
+                        this.article.title='';
+                        this.article.body='';
+                        alert('Article updated');
+                        this.fetchArticles();
+                      })
+                      .catch(err => console.log(err));
+                      }
             },
-                mounted() {console.log(this.pagination.current_page) }
+
+            editArticle(article) {
+              this.edit=true;
+              this.article.id=article.id;
+              this.article.article_id=article.id;
+              this.article.title=article.title;
+              this.article.body=article.body;
+            }
         }
       }
 </script>

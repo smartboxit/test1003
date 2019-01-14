@@ -1816,6 +1816,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1838,7 +1840,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       var vm = this;
-      page_url = page_url || 'api/articles';
+      page_url = page_url || '/api/articles';
       fetch(page_url).then(function (res) {
         return res.json();
       }).then(function (res) {
@@ -1855,8 +1857,6 @@ __webpack_require__.r(__webpack_exports__);
         next_page_url: links.next,
         prev_page_url: links.prev
       };
-      this.pagination = pagination;
-      console.log(this.pagination.prev_page_url);
     },
     deleteArticle: function deleteArticle(id) {
       var _this2 = this;
@@ -1886,7 +1886,7 @@ __webpack_require__.r(__webpack_exports__);
           headers: {
             'content-type': 'application/json'
           }
-        }).then(function (data) {
+        }).then(function (res) {
           return res.json();
         }).then(function (data) {
           _this3.article.title = '';
@@ -1897,11 +1897,33 @@ __webpack_require__.r(__webpack_exports__);
         }).catch(function (err) {
           return console.log(err);
         });
-      } else {//Update
+      } else {
+        //Update
+        fetch('api/article/${this.article.id}', {
+          method: 'put',
+          body: JSON.stringify(this.article),
+          headers: {
+            'content-type': 'application/json'
+          }
+        }).then(function (res) {
+          return res.json();
+        }).then(function (data) {
+          _this3.article.title = '';
+          _this3.article.body = '';
+          alert('Article updated');
+
+          _this3.fetchArticles();
+        }).catch(function (err) {
+          return console.log(err);
+        });
       }
     },
-    mounted: function mounted() {
-      console.log(this.pagination.current_page);
+    editArticle: function editArticle(article) {
+      this.edit = true;
+      this.article.id = article.id;
+      this.article.article_id = article.id;
+      this.article.title = article.title;
+      this.article.body = article.body;
     }
   }
 });
@@ -37269,6 +37291,21 @@ var render = function() {
             _c("h3", [_vm._v(_vm._s(article.title) + " ")]),
             _vm._v(" "),
             _c("p", [_vm._v(" " + _vm._s(article.body) + " ")]),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-warning",
+                on: {
+                  click: function($event) {
+                    _vm.editArticle(article)
+                  }
+                }
+              },
+              [_vm._v(" Edit ")]
+            ),
             _vm._v(" "),
             _c("hr"),
             _vm._v(" "),
