@@ -121,8 +121,8 @@
                         })
                         .catch(err => console.log(err));
                   } else {
-                    //Update
-                    fetch('api/article/${this.article.id}', {
+                    //Update                    fetch('api/article/${this.article.id}', {
+                    fetch('api/article', {
                       method: 'put',
                       body: JSON.stringify(this.article),
                       headers: {'content-type':'application/json'}
